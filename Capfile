@@ -3,6 +3,7 @@
 set :client_code, 'client-code'             # Client code, keep their jobs together
 set :job_name,    'job-name'                # Job name
 set :server_path, '/var/www/path-to-files'  # Path to your client files
+set :server_url,  'http://yourdomain.com/'  # Path to your client files
 set :user,        'username'                # User on the server
 set :application, 'yourdomain.com'          # Domain/IP to connect to
 
@@ -31,6 +32,10 @@ role :app, application
 role :web, application
 role :db,  application, :primary => true
 
+#------ Order ---------------------
+
+after "deploy", "deploy:output_paths", "deploy:copy_path_to_clipboard"
+
 #------ Deployment tasks ---------------------
 
 namespace :deploy do
@@ -49,6 +54,19 @@ namespace :deploy do
   task :finalize_update, :roles => :app do
     run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
     # Overide the rest of the default method
+  end
+  
+  #------ Wrap things up ----------------------------------------
+
+  desc "Output paths"
+  task :output_paths do
+    puts "Release: #{server_url}/#{client_code}/#{job_name}/latest/"
+    puts "Latest:  #{server_url}/#{client_code}/#{job_name}/#{release_name}/"
+  end
+  
+  desc "Copies path to clipboard"
+  task :copy_path_to_clipboard do
+    system "which pbcopy > /dev/null && echo '#{server_url}/#{client_code}/#{job_name}/latest/' | pbcopy"
   end
   
   #------ Rollback tasks [deploy:rollback] ---------------------
