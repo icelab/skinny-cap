@@ -1,13 +1,13 @@
 #------ Settings ------------------------------
 
-set :client_code, 'client-code'
-set :job_name, 'job-name'
-set :server_path, '/var/www/path-to-files'
-set :user, 'username'
+set :client_code, 'client-code'             # Client code, keep their jobs together
+set :job_name,    'job-name'                # Job name
+set :server_path, '/var/www/path-to-files'  # Path to your client files
+set :user,        'username'                # User on the server
+set :application, 'yourdomain.com'          # Domain/IP to connect to
 
 #------ Server config -------------------------
 
-set :application, ''
 set :deploy_to, "#{server_path}/#{client_code}/#{job_name}"
 set :repository, '.'
 
